@@ -15,7 +15,7 @@ public class RegisterRequest
     [Required]
     public string? Expiry { get; set; }
     [Required]
-    public int? CVC { get; set; }
+    public string? CVC { get; set; }
     [Required]
     public string? Country { get; set; }
 }

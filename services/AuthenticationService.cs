@@ -1,4 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Text;
 using AuthenticationApi.Dtos;
@@ -45,7 +47,26 @@ public class AuthenticationService : IAuthenticationService
         {
             throw new ArgumentException($"Unable to register user {request.Username} errors: {GetErrorsText(result.Errors)}");
         }
+        // send welcome email
+        // var smtpClient = new SmtpClient("smtp.gmail.com")
+        // {
+        //     Port = 587,
+        //     Credentials = new NetworkCredential("username", "password"),
+        //     EnableSsl = true,
+        // };
+    
+        // // smtpClient.Send("email", "recipient", "subject", "body");
+        // var mailMessage = new MailMessage
+        // {
+        //     From = new MailAddress("email"),
+        //     Subject = "subject",
+        //     Body = "<h1>Hello</h1>",
+        //     IsBodyHtml = true,
+        // };
+        // mailMessage.To.Add("recipient");
+        // smtpClient.Send(mailMessage);
 
+        // end of sending email
         return await Login(new LoginRequest { Email = request.Email, Password = request.Password });
     }
 

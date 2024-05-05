@@ -30,9 +30,9 @@ namespace api.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("CVC")
+                    b.Property<string>("CVC")
                         .IsRequired()
-                        .HasColumnType("integer");
+                        .HasColumnType("text");
 
                     b.Property<string>("CardNumber")
                         .IsRequired()

@@ -83,11 +83,11 @@ builder.Services.AddSwaggerGen(c =>
 // 6. Add CORS policy
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAngularDevClient",
+    options.AddPolicy("ApiCorsPolicy",
         b =>
         {
             b
-                .WithOrigins("http://localhost:4200")
+                .AllowAnyOrigin()
                 .AllowAnyHeader()
                 .AllowAnyMethod();
         });
@@ -102,7 +102,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 //7. Use CORS
-app.UseCors("AllowAngularDevClient");
+app.UseCors("ApiCorsPolicy");
 app.UseHttpsRedirection();
 
 // 8. Authentication
