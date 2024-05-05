@@ -32,9 +32,13 @@ public class AuthenticationService : IAuthenticationService
         {
             Email = request.Email,
             UserName = request.Username,
+            CardNumber = request.CardNumber,
+            Expiry = request.Expiry,
+            CVC = request.CVC,
+            Country = request.Country,
             SecurityStamp = Guid.NewGuid().ToString()
         };
-
+    
         var result = await _userManager.CreateAsync(user, request.Password);
 
         if(!result.Succeeded)
@@ -42,21 +46,16 @@ public class AuthenticationService : IAuthenticationService
             throw new ArgumentException($"Unable to register user {request.Username} errors: {GetErrorsText(result.Errors)}");
         }
 
-        return await Login(new LoginRequest { Username = request.Email, Password = request.Password });
+        return await Login(new LoginRequest { Email = request.Email, Password = request.Password });
     }
 
     public async Task<string> Login(LoginRequest request)
     {
-        var user = await _userManager.FindByNameAsync(request.Username);
-
-        if(user is null)
-        {
-            user = await _userManager.FindByEmailAsync(request.Username);
-        }
+        var user = await _userManager.FindByEmailAsync(request.Email);
 
         if (user is null || !await _userManager.CheckPasswordAsync(user, request.Password))
         {
-            throw new ArgumentException($"Unable to authenticate user {request.Username}");
+            throw new ArgumentException($"Unable to authenticate user {request.Email}");
         }
 
         var authClaims = new List<Claim>
