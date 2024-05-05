@@ -5,11 +5,29 @@ using AuthenticationApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Stripe;
+
+StripeConfiguration.ApiKey = "sk_test_51PD97RLN58NtFWNdTmyErOxpDuF2LZu5BQYOqrF9lxIEvLaBd6BocDHZbXBR3L62FOuEQu34EpjTCrZxAc4l8r9I00T7tVxThD";
+
+
+// Environment.GetEnvironmentVariable("STRIPE_SECRET_KEY", EnvironmentVariableTarget.Machine);
+
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
+builder.Services.Configure<StripeOptions>(options =>
+{
+    options.PublishableKey = "pk_test_51PD97RLN58NtFWNdKMuYpZtFfeC5XO5TbiqFzra1aVEaJwGvyqC5uB48eLREnirnppIiRwNHgrk2yDQrJ4835bdB00CqX7JenA";
+    
+    // Environment.GetEnvironmentVariable("STRIPE_PUBLISHABLE_KEY", EnvironmentVariableTarget.Machine);
+    options.SecretKey = "sk_test_51PD97RLN58NtFWNdTmyErOxpDuF2LZu5BQYOqrF9lxIEvLaBd6BocDHZbXBR3L62FOuEQu34EpjTCrZxAc4l8r9I00T7tVxThD";
+    // Environment.GetEnvironmentVariable("STRIPE_SECRET_KEY", EnvironmentVariableTarget.Machine);
+    options.WebhookSecret = "whsec_7c7f70bf90d077e44d6d59d6fd89761d4a8ccc07ebdba9f1b9175144e6a09663";
+    // Environment.GetEnvironmentVariable("STRIPE_WEBHOOK_SECRET", EnvironmentVariableTarget.Machine);
+});
 
 // 1. DbContext
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("db")));
@@ -101,6 +119,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// app.UseStaticFiles(new StaticFileOptions()
+// {
+//     FileProvider = new PhysicalFileProvider(
+//         Path.Combine(Directory.GetCurrentDirectory(),
+//         "127.0.0.1:3000")
+//     ),
+//     RequestPath = new PathString("")
+// });
+
+
 //7. Use CORS
 app.UseCors("ApiCorsPolicy");
 app.UseHttpsRedirection();

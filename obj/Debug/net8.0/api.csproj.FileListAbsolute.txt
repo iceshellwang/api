@@ -146,3 +146,4 @@
 /Users/wn/Desktop/api/bin/Debug/net8.0/runtimes/win/lib/net6.0/System.Windows.Extensions.dll
 /Users/wn/Desktop/api/bin/Debug/net8.0/Newtonsoft.Json.dll
 /Users/wn/Desktop/api/bin/Debug/net8.0/Stripe.net.dll
+/Users/wn/Desktop/api/obj/Debug/net8.0/api.sourcelink.json

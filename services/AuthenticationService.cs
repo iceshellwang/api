@@ -7,6 +7,7 @@ using AuthenticationApi.Dtos;
 using AuthenticationApi.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using Stripe;
 
 namespace AuthenticationApi.Services;
 
@@ -47,6 +48,54 @@ public class AuthenticationService : IAuthenticationService
         {
             throw new ArgumentException($"Unable to register user {request.Username} errors: {GetErrorsText(result.Errors)}");
         }
+
+        // // conduct the payment method firstly
+        // var options = new PaymentMethodCreateOptions
+        // {
+        //     Type = "card",
+        //     Card = new PaymentMethodCardOptions
+        //     {
+        //         Number = request.CardNumber,
+        //         ExpMonth = int.Parse(request.Expiry.Substring(0,2)),
+        //         ExpYear = int.Parse(request.Expiry.Substring(3)),
+        //         Cvc = request.CVC,
+        //     },
+        // };
+        // var service = new PaymentMethodService();
+        // var response = service.Create(options);
+
+        // // make the payment
+
+        var options = new ChargeCreateOptions
+        {
+            Amount = 1000,
+            Currency = "aud",
+            Source = "tok_visa",
+        };
+        var service = new ChargeService();
+        service.Create(options);
+        return  await Login(new LoginRequest { Email = request.Email, Password = request.Password });
+        // long orderAmount = 10;
+        // var currency ="aud";
+        // PaymentIntentCreateOptions options;
+
+        // options = new()
+        // {
+        //     Amount = orderAmount,
+        //     Currency = currency
+        // };
+        // try
+        // {
+        //     var service = new PaymentIntentService();
+        //     var paymentIntent = await service.CreateAsync(options);
+        //     var str = Results.Ok(new { paymentIntent.ClientSecret });
+        //     Console.WriteLine(str);
+        //     return  await Login(new LoginRequest { Email = request.Email, Password = request.Password });
+        // }
+        // catch (StripeException e)
+        // {
+        //     throw new ArgumentException($"Failed to create subscription. errors: {e}");
+        // }
         // send welcome email
         // var smtpClient = new SmtpClient("smtp.gmail.com")
         // {
@@ -66,8 +115,8 @@ public class AuthenticationService : IAuthenticationService
         // mailMessage.To.Add("recipient");
         // smtpClient.Send(mailMessage);
 
-        // end of sending email
-        return await Login(new LoginRequest { Email = request.Email, Password = request.Password });
+        // end of sending email 
+
     }
 
     public async Task<string> Login(LoginRequest request)
